@@ -15,7 +15,7 @@ if (
 ) {
     $unt_id = $data['unt_id'];
     $pgn_keterangan = $data['pgn_keterangan'];
-    $pgn_status = 3; 
+    $pgn_status = 2; 
     $pgn_creaby = $data['pgn_creaby'];
     $pgn_creadate = date("Y-m-d");
     $pgn_tanggal = date("Y-m-d");
@@ -54,7 +54,7 @@ if (
               ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
               
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ssssssssss", $unt_id, $pgn_tanggal, $pgn_jam_awal, $pgn_jam_akhir, $pgn_hours_meter_awal, $pgn_hours_meter_akhir, $pgn_keterangan, $pgn_status, $pgn_creaby, $pgn_creadate);
+    $stmt->bind_param("s", $unt_id, $pgn_tanggal, $pgn_jam_awal, $pgn_jam_akhir, $pgn_hours_meter_awal, $pgn_hours_meter_akhir, $pgn_keterangan, $pgn_status, $pgn_creaby, $pgn_creadate);
     
     if ($stmt->execute()) {
         echo json_encode(array('result' => 'Data berhasil disimpan'));
