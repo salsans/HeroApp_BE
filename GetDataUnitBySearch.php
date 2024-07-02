@@ -1,11 +1,12 @@
 <?php
 require_once('koneksi.php');
 
-// Memeriksa apakah parameter unt_nama tersedia
-if (isset($_GET['unt_nama'])) {
-    $unt_nama = $_GET['unt_nama'];
+$input = file_get_contents("php://input");
+$data = json_decode($input, true);
 
-    // Membuat query dengan parameter unt_nama menggunakan LIKE
+if (isset($data['unt_nama'])) {
+    $unt_nama = $data['unt_nama'];
+
     $query = "SELECT unt_id as id, unt_nama as nama, unt_hours_meter as hoursmeter, unt_foto as foto, unt_status as status FROM `mmo_unit` WHERE unt_nama LIKE ?";
     $stmt = $conn->prepare($query);
     $search_param = "%" . $unt_nama . "%";
@@ -24,12 +25,10 @@ if (isset($_GET['unt_nama'])) {
         ));
     }
     
-    // Menampilkan array dalam format JSON
     echo json_encode(array('result' => $response));
 } else {
-    echo json_encode(array('result' => 'Parameter unt_nama tidak ditemukan'));
+    echo json_encode(array('result' => 'Parameter unt_nama tidak ditemukan dalam request body'));
 }
 
-// Menutup koneksi
 $conn->close();
 ?>
