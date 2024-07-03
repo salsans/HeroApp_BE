@@ -17,7 +17,7 @@ if (
     $pgn_keterangan = $data['pgn_keterangan'];
     $pgn_status = 2; 
     $pgn_creaby = $data['pgn_creaby'];
-    $pgn_creadate = date("Y-m-d");
+    $pgn_creadate = date("Y-m-d H:i:s");
     $pgn_tanggal = date("Y-m-d");
     $pgn_jam_awal = date("H:i:s");
     $pgn_jam_akhir = NULL;
@@ -54,10 +54,19 @@ if (
               ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
               
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $unt_id, $pgn_tanggal, $pgn_jam_awal, $pgn_jam_akhir, $pgn_hours_meter_awal, $pgn_hours_meter_akhir, $pgn_keterangan, $pgn_status, $pgn_creaby, $pgn_creadate);
+    $stmt->bind_param("ssssssssss", $unt_id, $pgn_tanggal, $pgn_jam_awal, $pgn_jam_akhir, $pgn_hours_meter_awal, $pgn_hours_meter_akhir, $pgn_keterangan, $pgn_status, $pgn_creaby, $pgn_creadate);
     
     if ($stmt->execute()) {
-        echo json_encode(array('result' => 'Data berhasil disimpan'));
+        // Update unt_status menjadi 0
+        $query_update_status = "UPDATE mmo_unit SET unt_status = 0 WHERE unt_id = ?";
+        $stmt_update_status = $conn->prepare($query_update_status);
+        $stmt_update_status->bind_param("s", $unt_id);
+
+        if ($stmt_update_status->execute()) {
+            echo json_encode(array('result' => 'Data berhasil disimpan dan status unit diperbarui'));
+        } else {
+            echo json_encode(array('result' => 'Data berhasil disimpan tetapi gagal memperbarui status unit', 'error' => $stmt_update_status->error));
+        }
     } else {
         echo json_encode(array('result' => 'Data gagal disimpan', 'error' => $stmt->error));
     }
