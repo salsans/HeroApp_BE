@@ -6,11 +6,28 @@ $data = json_decode($input, true);
 
 if (isset($data['unt_nama'])) {
     $unt_nama = $data['unt_nama'];
-
+    $unt_status = isset($data['unt_status']) ? $data['unt_status'] : null;
+    
     $query = "SELECT unt_id as id, unt_nama as nama, unt_hours_meter as hoursmeter, unt_foto as foto, unt_status as status FROM `mmo_unit` WHERE unt_nama LIKE ?";
-    $stmt = $conn->prepare($query);
     $search_param = "%" . $unt_nama . "%";
-    $stmt->bind_param("s", $search_param);
+    $params = array($search_param);
+
+    if ($unt_status !== null) {
+        if (is_array($unt_status)) {
+            $placeholders = implode(',', array_fill(0, count($unt_status), '?'));
+            $query .= " AND unt_status IN ($placeholders)";
+            $params = array_merge($params, $unt_status);
+        } else {
+            $query .= " AND unt_status = ?";
+            $params[] = $unt_status;
+        }
+    }
+
+    $stmt = $conn->prepare($query);
+    
+    // Dynamically build the types string
+    $types = str_repeat('s', count($params));
+    $stmt->bind_param($types, ...$params);
     $stmt->execute();
     $result = $stmt->get_result();
     
