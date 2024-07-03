@@ -53,6 +53,12 @@ if (
             $stmt_update->bind_param("ssssss", $pgn_hours_meter_akhir, $pgn_jam_akhir, $pgn_modiby, $pgn_modidate, $pgn_status, $pgn_id);
 
             if ($stmt_update->execute()) {
+                // Update status unit (unt_status) menjadi 1 setelah pengembalian sukses
+                $query_update_unit_status = "UPDATE mmo_unit SET unt_status = 1 WHERE unt_id = ?";
+                $stmt_update_unit_status = $conn->prepare($query_update_unit_status);
+                $stmt_update_unit_status->bind_param("s", $unt_id);
+                $stmt_update_unit_status->execute();
+
                 echo json_encode(array('result' => 'Data berhasil diperbarui'));
             } else {
                 echo json_encode(array('result' => 'Data gagal diperbarui', 'error' => $stmt_update->error));
@@ -71,4 +77,3 @@ if (
 // Menutup koneksi
 $conn->close();
 ?>
-
