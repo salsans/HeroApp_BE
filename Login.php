@@ -36,40 +36,42 @@ if (isset($data['username']) && isset($data['password'])) {
                 $stmt_user->execute();
                 $result_user = $stmt_user->get_result();
 
-                if ($result_user->num_rows > 0) {
-                    $row_user = $result_user->fetch_assoc();
-                    $apk_id = $row_user['apk_id'];
-                    $rol_id = $row_user['rol_id'];
+                $found = false;
+                while ($row_user = $result_user->fetch_assoc()) {
+                    if ($row_user['apk_id'] == 3) {
+                        $apk_id = $row_user['apk_id'];
+                        $rol_id = $row_user['rol_id'];
+                        $found = true;
+                        break;
+                    }
+                }
 
-                    if ($apk_id == 3) {
-                        // Step 4: Get role name from sso_role
-                        $query_role = "SELECT rol_nama FROM sso_role WHERE rol_id = ?";
-                        $stmt_role = $conn->prepare($query_role);
-                        $stmt_role->bind_param("i", $rol_id);
-                        $stmt_role->execute();
-                        $result_role = $stmt_role->get_result();
+                if ($found) {
+                    // Step 4: Get role name from sso_role
+                    $query_role = "SELECT rol_nama FROM sso_role WHERE rol_id = ?";
+                    $stmt_role = $conn->prepare($query_role);
+                    $stmt_role->bind_param("i", $rol_id);
+                    $stmt_role->execute();
+                    $result_role = $stmt_role->get_result();
 
-                        if ($result_role->num_rows > 0) {
-                            $role = $result_role->fetch_assoc();
-                            $rol_nama = $role['rol_nama'];
+                    if ($result_role->num_rows > 0) {
+                        $role = $result_role->fetch_assoc();
+                        $rol_nama = $role['rol_nama'];
 
-                            $response = array(
-                                'result' => 'Login berhasil',
-                                'sso_user' => array(
-                                    'nama' => $mahasiswa['mhs_nama'],
-                                    'nim' => $mahasiswa['nim'],
-                                    'role' => $rol_nama
-                                )
-                            );
-                            echo json_encode($response);
-                        } else {
-                            echo json_encode(array('result' => 'Login gagal, role tidak ditemukan'));
-                        }
+                        $response = array(
+                            'result' => 'Login berhasil',
+                            'sso_user' => array(
+                                'nama' => $mahasiswa['mhs_nama'],
+                                'nim' => $mahasiswa['nim'],
+                                'role' => $rol_nama
+                            )
+                        );
+                        echo json_encode($response);
                     } else {
-                        echo json_encode(array('result' => 'Login gagal, aplikasi tidak diizinkan'));
+                        echo json_encode(array('result' => 'Login gagal, role tidak ditemukan'));
                     }
                 } else {
-                    echo json_encode(array('result' => 'Login gagal, user tidak ditemukan'));
+                    echo json_encode(array('result' => 'Login gagal, aplikasi tidak diizinkan'));
                 }
             } else {
                 echo json_encode(array('result' => 'Login gagal, username atau password salah'));
@@ -96,40 +98,42 @@ if (isset($data['username']) && isset($data['password'])) {
                     $stmt_user->execute();
                     $result_user = $stmt_user->get_result();
 
-                    if ($result_user->num_rows > 0) {
-                        $row_user = $result_user->fetch_assoc();
-                        $apk_id = $row_user['apk_id'];
-                        $rol_id = $row_user['rol_id'];
+                    $found = false;
+                    while ($row_user = $result_user->fetch_assoc()) {
+                        if ($row_user['apk_id'] == 3) {
+                            $apk_id = $row_user['apk_id'];
+                            $rol_id = $row_user['rol_id'];
+                            $found = true;
+                            break;
+                        }
+                    }
 
-                        if ($apk_id == 3) {
-                            // Step 4: Get role name from sso_role
-                            $query_role = "SELECT rol_nama FROM sso_role WHERE rol_id = ?";
-                            $stmt_role = $conn->prepare($query_role);
-                            $stmt_role->bind_param("i", $rol_id);
-                            $stmt_role->execute();
-                            $result_role = $stmt_role->get_result();
+                    if ($found) {
+                        // Step 4: Get role name from sso_role
+                        $query_role = "SELECT rol_nama FROM sso_role WHERE rol_id = ?";
+                        $stmt_role = $conn->prepare($query_role);
+                        $stmt_role->bind_param("i", $rol_id);
+                        $stmt_role->execute();
+                        $result_role = $stmt_role->get_result();
 
-                            if ($result_role->num_rows > 0) {
-                                $role = $result_role->fetch_assoc();
-                                $rol_nama = $role['rol_nama'];
+                        if ($result_role->num_rows > 0) {
+                            $role = $result_role->fetch_assoc();
+                            $rol_nama = $role['rol_nama'];
 
-                                $response = array(
-                                    'result' => 'Login berhasil',
-                                    'sso_user' => array(
-                                        'nama' => $karyawan['kry_nama'],
-                                        'npk' => $karyawan['npk'],
-                                        'role' => $role_nama
-                                    )
-                                );
-                                echo json_encode($response);
-                            } else {
-                                echo json_encode(array('result' => 'Login gagal, role tidak ditemukan'));
-                            }
+                            $response = array(
+                                'result' => 'Login berhasil',
+                                'sso_user' => array(
+                                    'nama' => $karyawan['kry_nama'],
+                                    'npk' => $karyawan['kry_npk'],
+                                    'role' => $rol_nama
+                                )
+                            );
+                            echo json_encode($response);
                         } else {
-                            echo json_encode(array('result' => 'Login gagal, aplikasi tidak diizinkan'));
+                            echo json_encode(array('result' => 'Login gagal, role tidak ditemukan'));
                         }
                     } else {
-                        echo json_encode(array('result' => 'Login gagal, user tidak ditemukan'));
+                        echo json_encode(array('result' => 'Login gagal, aplikasi tidak diizinkan'));
                     }
                 } else {
                     echo json_encode(array('result' => 'Login gagal, username atau password salah'));
