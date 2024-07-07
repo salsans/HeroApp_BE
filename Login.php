@@ -59,22 +59,22 @@ if (isset($data['username']) && isset($data['password'])) {
                         $rol_nama = $role['rol_nama'];
 
                         $response = array(
-                            'result' => 'Login berhasil',
-                            'sso_user' => array(
+                            array(
+                                'id' => $mhs_id,
                                 'nama' => $mahasiswa['mhs_nama'],
                                 'nim' => $mahasiswa['nim'],
                                 'role' => $rol_nama
                             )
                         );
-                        echo json_encode($response);
+                        echo json_encode(array('result' => $response, 'message' => 'Login Berhasil'));                    
                     } else {
-                        echo json_encode(array('result' => 'Login gagal, role tidak ditemukan'));
+                        echo json_encode(array('result' => [], 'message' =>'Login gagal, role tidak ditemukan'));
                     }
                 } else {
-                    echo json_encode(array('result' => 'Login gagal, aplikasi tidak diizinkan'));
+                    echo json_encode(array('result' => [], 'message' =>'Login gagal, aplikasi tidak diizinkan'));
                 }
             } else {
-                echo json_encode(array('result' => 'Login gagal, username atau password salah'));
+                echo json_encode(array('result' => [], 'message' =>'Login gagal, username atau password salah'));
             }
         } else {
             // Step 1b: Verify password in sso_karyawan
@@ -121,25 +121,25 @@ if (isset($data['username']) && isset($data['password'])) {
                             $rol_nama = $role['rol_nama'];
 
                             $response = array(
-                                'result' => 'Login berhasil',
-                                'sso_user' => array(
+                                array(
+                                    'id' => $kry_id,
                                     'nama' => $karyawan['kry_nama'],
                                     'npk' => $karyawan['kry_npk'],
-                                    'role' => $rol_nama
+                                    'role' => $rol_nama                                
                                 )
                             );
-                            echo json_encode($response);
+                            echo json_encode(array('result' => $response, 'message' => 'Login Berhasil'));
                         } else {
-                            echo json_encode(array('result' => 'Login gagal, role tidak ditemukan'));
+                            echo json_encode(array('result' => [], 'message' =>'Login gagal, role tidak ditemukan'));                        
                         }
                     } else {
-                        echo json_encode(array('result' => 'Login gagal, aplikasi tidak diizinkan'));
+                        echo json_encode(array('result' => [], 'message' =>'Login gagal, aplikasi tidak diizinkan'));                    
                     }
                 } else {
-                    echo json_encode(array('result' => 'Login gagal, username atau password salah'));
+                    echo json_encode(array('result' => [], 'message' =>'Login gagal, username atau password salah'));                
                 }
             } else {
-                echo json_encode(array('result' => 'Login gagal, user tidak ditemukan'));
+                echo json_encode(array('result' => [], 'message' =>'Login gagal, user tidak ditemukan'));            
             }
         }
 

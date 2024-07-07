@@ -30,7 +30,7 @@ if (
     // Ambil hours_meter_awal dari hours_meter_akhir pengajuan sebelumnya
     $query_last_hours = "SELECT pgn_hours_meter_akhir FROM mmo_penggunaan WHERE unt_id = ? ORDER BY pgn_tanggal DESC, pgn_jam_akhir DESC LIMIT 1";
     $stmt_last_hours = $conn->prepare($query_last_hours);
-    $stmt_last_hours->bind_param("s", $unt_id);
+    $stmt_last_hours->bind_param("i", $unt_id);
 
     if ($stmt_last_hours->execute()) {
         $result_last_hours = $stmt_last_hours->get_result();
@@ -54,13 +54,13 @@ if (
               ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
               
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ssssssssss", $unt_id, $pgn_tanggal, $pgn_jam_awal, $pgn_jam_akhir, $pgn_hours_meter_awal, $pgn_hours_meter_akhir, $pgn_keterangan, $pgn_status, $pgn_creaby, $pgn_creadate);
+    $stmt->bind_param("isssisssis", $unt_id, $pgn_tanggal, $pgn_jam_awal, $pgn_jam_akhir, $pgn_hours_meter_awal, $pgn_hours_meter_akhir, $pgn_keterangan, $pgn_status, $pgn_creaby, $pgn_creadate);
     
     if ($stmt->execute()) {
         // Update unt_status menjadi 0
-        $query_update_status = "UPDATE mmo_unit SET unt_status = 0 WHERE unt_id = ?";
+        $query_update_status = "UPDATE mmo_unit SET unt_status = 4 WHERE unt_id = ?";
         $stmt_update_status = $conn->prepare($query_update_status);
-        $stmt_update_status->bind_param("s", $unt_id);
+        $stmt_update_status->bind_param("i", $unt_id);
 
         if ($stmt_update_status->execute()) {
             echo json_encode(array('result' => 'Data berhasil disimpan dan status unit diperbarui'));
