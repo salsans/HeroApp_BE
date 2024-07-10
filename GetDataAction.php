@@ -7,7 +7,7 @@ $data = json_decode($input, true);
 if (isset($data['sch_id'])) {
     $unt_nama = $data['sch_id'];
 
-    $query = "SELECT act_id as id, act_nama as nama, act_status as status, sch_id FROM `mmo_action` WHERE sch_id LIKE ?";
+    $query = "SELECT act_id as id, act_nama as nama, act_foto, act_ketengaran, act_status as status, sch_id FROM mmo_action WHERE sch_id LIKE ?";
     $stmt = $conn->prepare($query);
     $search_param = "%" . $sch_id . "%";
     $stmt->bind_param("s", $search_param);
@@ -19,6 +19,8 @@ if (isset($data['sch_id'])) {
         array_push($response, array(
             "act_id" => $row['id'],
             "act_nama" => $row['nama'],
+            "act_foto" => $row['act_foto'],
+            "act_ketengaran" => $row['act_ketengaran'],
             "act_status" => $row['status'],
             "sch_id" => $row['sch_id']
         ));
