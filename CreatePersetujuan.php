@@ -8,17 +8,19 @@ date_default_timezone_set('Asia/Jakarta');
 $input = file_get_contents("php://input");
 $data = json_decode($input, true);
 
-if (isset($data['pgn_id']) && isset($data['unt_id'])) {
+if (isset($data['pgn_id']) && isset($data['unt_id']) && isset($data['pgn_modiby'])) {
     $pgn_id = $data['pgn_id'];
     $unt_id = $data['unt_id'];
+    $pgn_modiby = $data['pgn_modiby'];
+    $pgn_modidate = date("Y-m-d H:i:s");
 
     try {
         $conn->begin_transaction();
 
         // Mengubah status pengajuan menjadi disetujui
-        $query_update_pengajuan = "UPDATE mmo_penggunaan SET pgn_status = 2 WHERE pgn_id = ?";
+        $query_update_pengajuan = "UPDATE mmo_penggunaan SET pgn_status = 2, pgn_modiby = ?, pgn_modidate = ? WHERE pgn_id = ?";
         $stmt_update_pengajuan = $conn->prepare($query_update_pengajuan);
-        $stmt_update_pengajuan->bind_param("i", $pgn_id);
+        $stmt_update_pengajuan->bind_param("isi", $pgn_modiby, $pgn_modidate, $pgn_id);
         $stmt_update_pengajuan->execute();
 
         // Mengubah status unit menjadi tersedia
