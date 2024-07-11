@@ -2,7 +2,7 @@
      
     require_once('koneksi.php');
     
-    $select = mysqli_query($conn, "select unt_id as id, unt_nama as nama, unt_hours_meter as hoursmeter, unt_foto as foto, unt_status as status FROM `mmo_unit` where unt_status = '3' ");
+    $select = mysqli_query($conn, "select unt_id as id, unt_nama as nama, unt_hours_meter as hoursmeter, unt_foto as foto, unt_status as status FROM `mmo_unit` where unt_status = '4' ");
     $result = array();
     while($row = mysqli_fetch_array($select)){
         array_push($result,array(
