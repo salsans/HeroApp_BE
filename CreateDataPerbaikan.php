@@ -12,6 +12,7 @@ $data = json_decode($input, true);
 if (isset($data['unt_id']) && isset($data['pbk_jenis'])) {
     $unt_id = $data['unt_id'];
     $pbk_jenis = $data['pbk_jenis'];
+    $pbk_creaby = $data['pbk_creaby'];
     $pbk_creadate = date("Y-m-d H:i:s");
 
     // Ambil data dari tabel mmo_unit
@@ -33,10 +34,19 @@ if (isset($data['unt_id']) && isset($data['pbk_jenis'])) {
             $pbk_tanggal_awal = date("Y-m-d");
             $pbk_tanggal_akhir = NULL;
 
-            $stmt_insert_pbk->bind_param("isssiss", $unit_data['unt_id'], $pbk_jenis, $pbk_tanggal_awal, $pbk_tanggal_akhir, $pbk_hours_meter, $pbk_creaby, $pbk_creadate);
+            $stmt_insert_pbk->bind_param("isssiss", $unt_id, $pbk_jenis, $pbk_tanggal_awal, $pbk_tanggal_akhir, $pbk_hours_meter, $pbk_creaby, $pbk_creadate);
 
             if ($stmt_insert_pbk->execute()) {
-                echo json_encode(array('result' => 'Data berhasil disimpan di tabel mmo_perbaikan'));
+                // Update status unit menjadi 4
+                $query_update_unit = "UPDATE mmo_unit SET unt_status = 4 WHERE unt_id = ?";
+                $stmt_update_unit = $conn->prepare($query_update_unit);
+                $stmt_update_unit->bind_param("i", $data['unt_id']);
+
+                if ($stmt_update_unit->execute()) {
+                    echo json_encode(array('result' => 'Data berhasil disimpan di tabel mmo_perbaikan dan status unit berhasil diubah'));
+                } else {
+                    echo json_encode(array('result' => 'Data berhasil disimpan di tabel mmo_perbaikan, tetapi gagal mengubah status unit', 'error' => $stmt_update_unit->error));
+                }
             } else {
                 echo json_encode(array('result' => 'Data gagal disimpan di tabel mmo_perbaikan', 'error' => $stmt_insert_pbk->error));
             }
