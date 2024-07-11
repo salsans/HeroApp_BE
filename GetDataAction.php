@@ -5,7 +5,7 @@ $input = file_get_contents("php://input");
 $data = json_decode($input, true);
 
 if (isset($data['sch_id'])) {
-    $unt_nama = $data['sch_id'];
+    $sch_id = $data['sch_id'];
 
     $query = "SELECT act_id as id, act_nama as nama, act_foto, act_keterangan, act_status as status, sch_id FROM mmo_action WHERE sch_id LIKE ?";
     $stmt = $conn->prepare($query);
