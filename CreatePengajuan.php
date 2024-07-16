@@ -19,8 +19,8 @@ if (
     $pgn_status = 1; 
     $pgn_creaby = $data['pgn_creaby'];
     $pgn_creadate = date("Y-m-d H:i:s");
-    $pgn_tanggal = date("Y-m-d");
-    $pgn_jam_awal = date("H:i:s");
+    $pgn_tanggal = NULL;
+    $pgn_jam_awal = NULL;
     $pgn_jam_akhir = NULL;
     $pgn_hours_meter_akhir = NULL; 
 
