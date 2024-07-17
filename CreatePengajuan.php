@@ -49,7 +49,7 @@ if (
             
             if ($stmt->execute()) {
                 // Update unt_status menjadi 3
-                $query_update_status = "UPDATE mmo_unit SET unt_status = 3 WHERE unt_id = ?";
+                $query_update_status = "UPDATE mmo_unit SET unt_status = 2 WHERE unt_id = ?";
                 $stmt_update_status = $conn->prepare($query_update_status);
                 $stmt_update_status->bind_param("i", $unt_id);
 
