@@ -116,7 +116,7 @@ if (isset($data['unt_id']) && isset($data['pbk_id'])) {
         "actions" => $actions
     );
 
-    echo json_encode(array('result' => 'Data found', 'data' => $response));
+    echo json_encode(array('result' =>  array($response)));
 } else {
     echo json_encode(array('result' => 'Required parameters are missing'));
 }

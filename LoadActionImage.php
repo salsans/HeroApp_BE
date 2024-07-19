@@ -15,24 +15,46 @@ if (isset($_GET['act_id'])) {
 
 if ($act_id !== null) {
     try {
-        // Query untuk mengambil foto berdasarkan act_id
-        $sql = "SELECT act_foto FROM mmo_action WHERE act_id = ?";
+        // Query untuk mengambil data berdasarkan act_id
+        $sql = "SELECT act_nama, act_keterangan, act_foto FROM mmo_action WHERE act_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $act_id);
         $stmt->execute();
-        $stmt->bind_result($act_foto);
+        $stmt->bind_result($act_nama, $act_keterangan, $act_foto);
         $stmt->fetch();
 
-        // Menutup koneksi statement dan connection
+        // Menutup koneksi statement
         $stmt->close();
         $conn->close();
 
-        // Menampilkan gambar jika ditemukan
-        if ($act_foto) {
-            header("Content-Type: image/jpeg");
-            echo $act_foto;
+        // Menampilkan data jika ditemukan
+        if ($act_nama || $act_keterangan || $act_foto) {
+            if (isset($_GET['get_foto']) && $_GET['get_foto'] == '1' && $act_foto) {
+                $mime_type = '';
+
+                $finfo = new finfo(FILEINFO_MIME_TYPE);
+                $mime_type = $finfo->buffer($act_foto);
+
+                // Memastikan hanya file gambar yang diizinkan
+                if (in_array($mime_type, ['image/jpeg', 'image/png', 'image/jpg'])) {
+                    header("Content-Type: $mime_type");
+                    echo $act_foto;
+                    exit;
+                } else {
+                    echo json_encode(array('result' => 'Tipe file tidak didukung.'));
+                    exit;
+                }
+            } else {
+                header("Content-Type: application/json");
+                echo json_encode(array(
+                    'act_nama' => $act_nama,
+                    'act_keterangan' => $act_keterangan,
+                    'act_foto' => $act_foto ? true : false 
+                ));
+                exit;
+            }
         } else {
-            echo "Foto tidak ditemukan.";
+            echo json_encode(array('result' => 'Data tidak ditemukan.'));
         }
     } catch (Exception $e) {
         echo json_encode(array('result' => 'Terjadi kesalahan: ' . $e->getMessage()));
