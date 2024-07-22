@@ -23,7 +23,7 @@ if (isset($data['unt_id'])) {
 
         if ($perbaikan_data) {
             // Ambil data dari tabel mmo_unit untuk mendapatkan unt_nama, unt_hours_meter, dan unt_foto
-            $query_unit = "SELECT unt_nama, unt_hours_meter, unt_foto FROM mmo_unit WHERE unt_id = ?";
+            $query_unit = "SELECT unt_hours_meter FROM mmo_unit WHERE unt_id = ?";
             $stmt_unit = $conn->prepare($query_unit);
             $stmt_unit->bind_param("i", $unt_id);
 
@@ -32,9 +32,9 @@ if (isset($data['unt_id'])) {
                 $unit_data = $result_unit->fetch_assoc();
 
                 if ($unit_data) {
-                    $unt_nama = $unit_data['unt_nama'];
+                    // $unt_nama = $unit_data['unt_nama'];
                     $unt_hours_meter = $unit_data['unt_hours_meter'];
-                    $unt_foto = $unit_data['unt_foto'];
+                    // $unt_foto = $unit_data['unt_foto'];
 
                     $response_data = array();
 
@@ -87,9 +87,9 @@ if (isset($data['unt_id'])) {
                             'pbk_tanggal_akhir' => $perbaikan['pbk_tanggal_akhir'],
                             'pbk_jam_akhir' => $perbaikan['pbk_jam_akhir'],
                             'unt_id' => $unt_id,
-                            'unt_nama' => $unt_nama,
+                            // 'unt_nama' => $unt_nama,
                             'unt_hours_meter' => $unt_hours_meter,
-                            'unt_foto' => $unt_foto
+                            // 'unt_foto' => $unt_foto
                         );
                     }
 
