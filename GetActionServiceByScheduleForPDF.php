@@ -1,6 +1,10 @@
 <?php
 require_once('koneksi.php');
 
+// Mengatur timezone jika belum disetel
+date_default_timezone_set('Asia/Jakarta');
+
+// Mendapatkan input JSON
 $input = file_get_contents("php://input");
 $data = json_decode($input, true);
 
@@ -98,6 +102,19 @@ if (isset($data['unt_id']) && isset($data['pbk_id'])) {
 
     $actions = array();
     while ($actionRow = $actionsResult->fetch_assoc()) {
+        // Decode base64 for act_foto
+        if (preg_match('/^data:image\/(\w+);base64,/', $actionRow['act_foto'], $type)) {
+            $base64Image = substr($actionRow['act_foto'], strpos($actionRow['act_foto'], ',') + 1);
+            $type = strtolower($type[1]); // jpg, png, gif
+            $decodedImage = base64_decode($base64Image);
+
+            if ($decodedImage === false) {
+                $actionRow['act_foto'] = 'Base64 decode failed';
+            } else {
+                // Encode image data to base64 to ensure compatibility
+                $actionRow['act_foto'] = 'data:image/' . $type . ';base64,' . base64_encode($decodedImage);
+            }
+        }
         array_push($actions, $actionRow);
     }
 
@@ -116,7 +133,7 @@ if (isset($data['unt_id']) && isset($data['pbk_id'])) {
         "actions" => $actions
     );
 
-    echo json_encode(array('result' =>  array($response)));
+    echo json_encode(array('result' => array($response)));
 } else {
     echo json_encode(array('result' => 'Required parameters are missing'));
 }
