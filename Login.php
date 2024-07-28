@@ -30,7 +30,7 @@ if (isset($data['username']) && isset($data['password'])) {
                 $mhs_id = $mahasiswa['mhs_id'];
 
                 // Step 3: Select from sso_user where mhs_id
-                $query_user = "SELECT apk_id, rol_id, mhs_id, kry_id FROM sso_user WHERE mhs_id = ?";
+                $query_user = "SELECT usr_id, apk_id, rol_id, mhs_id, kry_id FROM sso_user WHERE mhs_id = ?";
                 $stmt_user = $conn->prepare($query_user);
                 $stmt_user->bind_param("i", $mhs_id);
                 $stmt_user->execute();
@@ -39,6 +39,7 @@ if (isset($data['username']) && isset($data['password'])) {
                 $found = false;
                 while ($row_user = $result_user->fetch_assoc()) {
                     if ($row_user['apk_id'] == 3) {
+                        $usr_id = $row_user['usr_id'];
                         $apk_id = $row_user['apk_id'];
                         $rol_id = $row_user['rol_id'];
                         $found = true;
@@ -60,7 +61,7 @@ if (isset($data['username']) && isset($data['password'])) {
 
                         $response = array(
                             array(
-                                'id' => $mhs_id,
+                                'id' => $usr_id,
                                 'nama' => $mahasiswa['mhs_nama'],
                                 'nim' => $mahasiswa['nim'],
                                 'role' => $rol_nama
@@ -92,7 +93,7 @@ if (isset($data['username']) && isset($data['password'])) {
                     $kry_id = $karyawan['kry_id'];
 
                     // Step 3b: Select from sso_user where kry_id
-                    $query_user = "SELECT apk_id, rol_id, mhs_id, kry_id FROM sso_user WHERE kry_id = ?";
+                    $query_user = "SELECT usr_id, apk_id, rol_id, mhs_id, kry_id FROM sso_user WHERE kry_id = ?";
                     $stmt_user = $conn->prepare($query_user);
                     $stmt_user->bind_param("i", $kry_id);
                     $stmt_user->execute();
@@ -101,6 +102,7 @@ if (isset($data['username']) && isset($data['password'])) {
                     $found = false;
                     while ($row_user = $result_user->fetch_assoc()) {
                         if ($row_user['apk_id'] == 3) {
+                            $usr_id = $row_user['usr_id'];
                             $apk_id = $row_user['apk_id'];
                             $rol_id = $row_user['rol_id'];
                             $found = true;
@@ -122,7 +124,7 @@ if (isset($data['username']) && isset($data['password'])) {
 
                             $response = array(
                                 array(
-                                    'id' => $kry_id,
+                                    'id' => $usr_id,
                                     'nama' => $karyawan['kry_nama'],
                                     'npk' => $karyawan['kry_npk'],
                                     'role' => $rol_nama                                
