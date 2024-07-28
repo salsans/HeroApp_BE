@@ -85,8 +85,24 @@ if (isset($data['sch_id']) && isset($data['actions']) && is_array($data['actions
             array_push($response, array('result' => 'Gagal Mengubah Status Unit'));
         }
 
+        // Update pbk_tanggal_akhir and pbk_jam_akhir in mmo_perbaikan
+        $currentDate = date("Y-m-d");
+        $currentTime = date("H:i:s");
+        $updatePerbaikanQuery = "
+            UPDATE mmo_perbaikan 
+            SET pbk_tanggal_akhir = ?, pbk_jam_akhir = ? 
+            WHERE unt_id = ?";
+        $updatePerbaikanStmt = $conn->prepare($updatePerbaikanQuery);
+        $updatePerbaikanStmt->bind_param("ssi", $currentDate, $currentTime, $unt_id);
+        if ($updatePerbaikanStmt->execute()) {
+            array_push($response, array('message' => 'Tanggal dan jam akhir perbaikan berhasil diperbarui'));
+        } else {
+            array_push($response, array('result' => 'Gagal memperbarui tanggal dan jam akhir perbaikan'));
+        }
+
         $stmt->close();
         $updateStmt->close();
+        $updatePerbaikanStmt->close();
         echo json_encode(array('result' => 'Data processed', 'data' => $response));
     } else {
         echo json_encode(array('result' => 'Tidak Ditemukan Jadwal Service Untuk Unit Ini'));

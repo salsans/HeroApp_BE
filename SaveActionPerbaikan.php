@@ -27,8 +27,8 @@ if (isset($data['pbk_id']) && isset($data['mtc_keterangan'])) {
         if ($perbaikan_data) {
             $unt_id = $perbaikan_data['unt_id'];
 
-            // Masukkan data ke tabel mmo_detail_maintanance
-            $query_insert_mtc = "INSERT INTO mmo_detail_maintanance (pbk_id, mtc_keterangan, mtc_creadate) VALUES (?, ?, ?)";
+            // Masukkan data ke tabel mmo_save_perbaikan_action
+            $query_insert_mtc = "INSERT INTO mmo_save_perbaikan_action (pbk_id, mtc_keterangan, mtc_creadate) VALUES (?, ?, ?)";
             $stmt_insert_mtc = $conn->prepare($query_insert_mtc);
             $stmt_insert_mtc->bind_param("iss", $pbk_id, $mtc_keterangan, $mtc_creadate);
 
@@ -45,15 +45,15 @@ if (isset($data['pbk_id']) && isset($data['mtc_keterangan'])) {
                     $stmt_update_perbaikan->bind_param("si", $pbk_tanggal_akhir, $pbk_id);
 
                     if ($stmt_update_perbaikan->execute()) {
-                        echo json_encode(array('result' => 'Data berhasil disimpan di tabel mmo_detail_maintanance, unt_status berhasil diubah menjadi 1, dan pbk_tanggal_akhir berhasil diperbarui'));
+                        echo json_encode(array('result' => 'Data berhasil disimpan di tabel mmo_save_perbaikan_action, unt_status berhasil diubah menjadi 1, dan pbk_tanggal_akhir berhasil diperbarui'));
                     } else {
-                        echo json_encode(array('result' => 'Data berhasil disimpan di tabel mmo_detail_maintanance dan unt_status berhasil diubah menjadi 1, tetapi gagal memperbarui pbk_tanggal_akhir', 'error' => $stmt_update_perbaikan->error));
+                        echo json_encode(array('result' => 'Data berhasil disimpan di tabel mmo_save_perbaikan_action dan unt_status berhasil diubah menjadi 1, tetapi gagal memperbarui pbk_tanggal_akhir', 'error' => $stmt_update_perbaikan->error));
                     }
                 } else {
-                    echo json_encode(array('result' => 'Data berhasil disimpan di tabel mmo_detail_maintanance, tetapi gagal mengubah unt_status', 'error' => $stmt_update_unit->error));
+                    echo json_encode(array('result' => 'Data berhasil disimpan di tabel mmo_save_perbaikan_action, tetapi gagal mengubah unt_status', 'error' => $stmt_update_unit->error));
                 }
             } else {
-                echo json_encode(array('result' => 'Data gagal disimpan di tabel mmo_detail_maintanance', 'error' => $stmt_insert_mtc->error));
+                echo json_encode(array('result' => 'Data gagal disimpan di tabel mmo_save_perbaikan_action', 'error' => $stmt_insert_mtc->error));
             }
         } else {
             echo json_encode(array('result' => 'Data perbaikan dengan pbk_id tersebut tidak ditemukan'));

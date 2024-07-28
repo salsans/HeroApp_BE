@@ -9,7 +9,7 @@ date_default_timezone_set('Asia/Jakarta');
 $input = file_get_contents("php://input");
 $data = json_decode($input, true);
 
-if (isset($data['unt_id']) && isset($data['pbk_jenis'])) {
+if (isset($data['unt_id']) && isset($data['pbk_jenis']) && isset($data['pbk_creaby'])) {
     $unt_id = $data['unt_id'];
     $pbk_jenis = $data['pbk_jenis'];
     $pbk_creaby = $data['pbk_creaby'];
@@ -32,13 +32,18 @@ if (isset($data['unt_id']) && isset($data['pbk_jenis'])) {
             $query_insert_pbk = "INSERT INTO mmo_perbaikan (unt_id, pbk_jenis, pbk_tanggal_awal, pbk_tanggal_akhir, pbk_hours_meter, pbk_creaby, pbk_creadate) VALUES (?, ?, ?, ?, ?, ?, ?)";
             $stmt_insert_pbk = $conn->prepare($query_insert_pbk);
             $pbk_tanggal_awal = date("Y-m-d");
-            $pbk_tanggal_akhir = NULL;
+            $pbk_tanggal_akhir = date("Y-m-d");
 
             $stmt_insert_pbk->bind_param("isssiss", $unt_id, $pbk_jenis, $pbk_tanggal_awal, $pbk_tanggal_akhir, $pbk_hours_meter, $pbk_creaby, $pbk_creadate);
 
             if ($stmt_insert_pbk->execute()) {
-                // Update status unit menjadi 4
-                $query_update_unit = "UPDATE mmo_unit SET unt_status = 4 WHERE unt_id = ?";
+
+                if ($data['pbk_jenis'] == 1){
+                    $jns = 4;
+                } else if ($data['pbk_jenis'] == 2){
+                    $jns = 5;
+                }
+                $query_update_unit = "UPDATE mmo_unit SET unt_status = $jns WHERE unt_id = ?";
                 $stmt_update_unit = $conn->prepare($query_update_unit);
                 $stmt_update_unit->bind_param("i", $data['unt_id']);
 
