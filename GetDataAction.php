@@ -7,10 +7,9 @@ $data = json_decode($input, true);
 if (isset($data['sch_id'])) {
     $sch_id = $data['sch_id'];
 
-    $query = "SELECT act_id as id, act_nama as nama, act_foto, act_keterangan, act_status as status, sch_id FROM mmo_action WHERE sch_id LIKE ?";
+    $query = "SELECT act_id as id, act_nama as nama, act_foto, act_keterangan, act_status as status, sch_id FROM mmo_action WHERE sch_id = ?";
     $stmt = $conn->prepare($query);
-    $search_param = "%" . $sch_id . "%";
-    $stmt->bind_param("s", $search_param);
+    $stmt->bind_param("s", $sch_id);
     $stmt->execute();
     $result = $stmt->get_result();
     

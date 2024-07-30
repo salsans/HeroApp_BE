@@ -39,15 +39,15 @@ if (isset($data['pbk_id']) && isset($data['mtc_keterangan'])) {
                 $stmt_update_unit->bind_param("i", $unt_id);
 
                 if ($stmt_update_unit->execute()) {
-                    // Ubah pbk_tanggal_akhir di tabel mmo_perbaikan
-                    $query_update_perbaikan = "UPDATE mmo_perbaikan SET pbk_tanggal_akhir = ? WHERE pbk_id = ?";
+                    // Ubah pbk_tanggal_akhir dan pbk_jam_akhir di tabel mmo_perbaikan
+                    $query_update_perbaikan = "UPDATE mmo_perbaikan SET pbk_tanggal_akhir = ?, pbk_jam_akhir = CURRENT_TIME() WHERE pbk_id = ?";
                     $stmt_update_perbaikan = $conn->prepare($query_update_perbaikan);
                     $stmt_update_perbaikan->bind_param("si", $pbk_tanggal_akhir, $pbk_id);
 
                     if ($stmt_update_perbaikan->execute()) {
-                        echo json_encode(array('result' => 'Data berhasil disimpan di tabel mmo_save_perbaikan_action, unt_status berhasil diubah menjadi 1, dan pbk_tanggal_akhir berhasil diperbarui'));
+                        echo json_encode(array('result' => 'Data berhasil disimpan di tabel mmo_save_perbaikan_action, unt_status berhasil diubah menjadi 1, dan pbk_tanggal_akhir serta pbk_jam_akhir berhasil diperbarui'));
                     } else {
-                        echo json_encode(array('result' => 'Data berhasil disimpan di tabel mmo_save_perbaikan_action dan unt_status berhasil diubah menjadi 1, tetapi gagal memperbarui pbk_tanggal_akhir', 'error' => $stmt_update_perbaikan->error));
+                        echo json_encode(array('result' => 'Data berhasil disimpan di tabel mmo_save_perbaikan_action dan unt_status berhasil diubah menjadi 1, tetapi gagal memperbarui pbk_tanggal_akhir dan pbk_jam_akhir', 'error' => $stmt_update_perbaikan->error));
                     }
                 } else {
                     echo json_encode(array('result' => 'Data berhasil disimpan di tabel mmo_save_perbaikan_action, tetapi gagal mengubah unt_status', 'error' => $stmt_update_unit->error));

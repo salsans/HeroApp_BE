@@ -29,23 +29,19 @@ if (isset($data['unt_id']) && isset($data['pbk_jenis']) && isset($data['pbk_crea
             $pbk_hours_meter = $unit_data['unt_hours_meter'];
 
             // Masukkan data ke tabel mmo_perbaikan
-            $query_insert_pbk = "INSERT INTO mmo_perbaikan (unt_id, pbk_jenis, pbk_tanggal_awal, pbk_tanggal_akhir, pbk_hours_meter, pbk_creaby, pbk_creadate) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $query_insert_pbk = "INSERT INTO mmo_perbaikan (unt_id, pbk_jenis, pbk_tanggal_awal, pbk_jam_awal, pbk_tanggal_akhir, pbk_hours_meter, pbk_creaby, pbk_creadate) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt_insert_pbk = $conn->prepare($query_insert_pbk);
-            $pbk_tanggal_awal = date("Y-m-d");
-            $pbk_tanggal_akhir = date("Y-m-d");
+            $pbk_tanggal_awal = date("Y-m-d"); // Menyimpan tanggal saat ini
+            $pbk_jam_awal = date("H:i:s"); // Menyimpan waktu saat ini
+            $pbk_tanggal_akhir = date("Y-m-d"); // Menyimpan tanggal saat ini juga
 
-            $stmt_insert_pbk->bind_param("isssiss", $unt_id, $pbk_jenis, $pbk_tanggal_awal, $pbk_tanggal_akhir, $pbk_hours_meter, $pbk_creaby, $pbk_creadate);
+            $stmt_insert_pbk->bind_param("issssiss", $unt_id, $pbk_jenis, $pbk_tanggal_awal, $pbk_jam_awal, $pbk_tanggal_akhir, $pbk_hours_meter, $pbk_creaby, $pbk_creadate);
 
             if ($stmt_insert_pbk->execute()) {
-
-                if ($data['pbk_jenis'] == 1){
-                    $jns = 4;
-                } else if ($data['pbk_jenis'] == 2){
-                    $jns = 5;
-                }
-                $query_update_unit = "UPDATE mmo_unit SET unt_status = $jns WHERE unt_id = ?";
+                $jns = ($pbk_jenis == 1) ? 4 : 5;
+                $query_update_unit = "UPDATE mmo_unit SET unt_status = ? WHERE unt_id = ?";
                 $stmt_update_unit = $conn->prepare($query_update_unit);
-                $stmt_update_unit->bind_param("i", $data['unt_id']);
+                $stmt_update_unit->bind_param("ii", $jns, $unt_id);
 
                 if ($stmt_update_unit->execute()) {
                     echo json_encode(array('result' => 'Data berhasil disimpan di tabel mmo_perbaikan dan status unit berhasil diubah'));
