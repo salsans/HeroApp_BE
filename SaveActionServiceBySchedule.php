@@ -1,6 +1,8 @@
 <?php
 require_once('koneksi.php');
 
+date_default_timezone_set('Asia/Jakarta');
+
 $input = file_get_contents("php://input");
 $data = json_decode($input, true);
 
@@ -9,11 +11,12 @@ if (isset($data['sch_id']) && isset($data['actions']) && is_array($data['actions
     
     // Fetch unt_id and pbk_id from mmo_perbaikan where sch_id and pbk_jenis = 2
     $perbaikanQuery = "
-        SELECT unt_id, pbk_id 
-        FROM mmo_perbaikan 
-        WHERE unt_id IN (SELECT unt_id FROM mmo_schedule WHERE sch_id = ?) 
-          AND pbk_jenis = 2 
-        LIMIT 1";
+    SELECT unt_id, pbk_id 
+    FROM mmo_perbaikan 
+    WHERE unt_id IN (SELECT unt_id FROM mmo_schedule WHERE sch_id = ?) 
+      AND pbk_jenis = 2 
+    ORDER BY pbk_id DESC 
+    LIMIT 1";
     $perbaikanStmt = $conn->prepare($perbaikanQuery);
     $perbaikanStmt->bind_param("s", $sch_id);
     $perbaikanStmt->execute();
@@ -91,9 +94,9 @@ if (isset($data['sch_id']) && isset($data['actions']) && is_array($data['actions
         $updatePerbaikanQuery = "
             UPDATE mmo_perbaikan 
             SET pbk_tanggal_akhir = ?, pbk_jam_akhir = ? 
-            WHERE unt_id = ?";
+            WHERE pbk_id = ?";
         $updatePerbaikanStmt = $conn->prepare($updatePerbaikanQuery);
-        $updatePerbaikanStmt->bind_param("ssi", $currentDate, $currentTime, $unt_id);
+        $updatePerbaikanStmt->bind_param("ssi", $currentDate, $currentTime, $pbk_id);
         if ($updatePerbaikanStmt->execute()) {
             array_push($response, array('message' => 'Tanggal dan jam akhir perbaikan berhasil diperbarui'));
         } else {
